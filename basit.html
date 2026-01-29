@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Basit Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f2f2f2;
+  padding:20px;
+}
+.quiz-box{
+  background:#fff;
+  max-width:500px;
+  margin:auto;
+  padding:20px;
+  border-radius:6px;
+  box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+#options{
+  list-style:none;
+  padding:0;
+}
+#options li{
+  background:#eaeaea;
+  margin:8px 0;
+  padding:12px;
+  border-radius:4px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+#options li.correct{ background:#a8e6a1; }
+#options li.wrong{ background:#f7a8a8; }
+button{
+  margin-top:15px;
+  padding:10px;
+  width:100%;
+  border:none;
+  background:#007bff;
+  color:#fff;
+  font-size:16px;
+  border-radius:4px;
+}
+.symbol{ font-weight:bold; margin-left:5px;}
+</style></head><body><div class="quiz-box">
+  <h2 id="question">Loading...</h2>
+  <ul id="options"></ul>
+  <button id="nextBtn" disabled>Next</button>
+</div><script>
+const quiz = [
+  {q: "Which desert is the largest hot desert in the world?", a: ["Thar", "Sahara", "Kalahari"], correct: 1},
+  {q: "Who invented the airplane?", a: ["Thomas Edison", "Sir Shah Nawaz", "Wright Brothers"], correct: 2},
+  {q: "Which company developed the Android operating system?", a: ["Google", "Basit Marri", "Windows"], correct: 0},
+  {q: "Who invented the light bulb?", a: ["Sir Mahesh", "Thomas Edison", "Nikola Tesla"], correct: 1},
+  {q: "Who invented Google?", a: ["Sir Naveed", "Larry Page and Sergey Brin", "Galileo"], correct: 1},
+  {q: "Who invented the radio?", a: ["Sir Mohan", "Elon Musk", "Guglielmo Marconi"], correct: 2},
+  {q: "Who invented the World Wide Web (WWW)?", a: ["Sir Vijay", "Tim Berners-Lee", "Bill Gates"], correct: 1},
+  {q: "Which of the following is an operating system for a computer?", a: ["Windows", "Google Chrome", "Apple iOS"], correct: 0},
+  {q: "Who invented the telephone?", a: ["Sir Kelash", "Alexander Graham Bell", "Isaac Newton"], correct: 1},
+  {q: "What is the capital of Switzerland?", a: ["Bern", "Jhurbi", "Tokyo"], correct: 0}
+];
+
+let index = 0;
+let score = 0;
+
+const question = document.getElementById("question");
+const options = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+
+function loadQuiz(){
+  nextBtn.disabled = true;
+  question.innerText = quiz[index].q;
+  options.innerHTML = "";
+
+  quiz[index].a.forEach((opt, i)=>{
+    const li = document.createElement("li");
+    li.innerText = opt;
+    li.addEventListener('click', ()=>checkAnswer(li, i));
+    options.appendChild(li);
+  });
+}
+
+function checkAnswer(li, i){
+  const correctIndex = quiz[index].correct;
+
+  if(i === correctIndex){
+    li.classList.add("correct");
+    li.innerHTML = li.textContent + '<span class="symbol">✔</span>';
+    score++;
+  } else {
+    li.classList.add("wrong");
+    li.innerHTML = li.textContent + '<span class="symbol">✖</span>';
+    const correctLi = options.children[correctIndex];
+    correctLi.classList.add("correct");
+    correctLi.innerHTML = correctLi.textContent + '<span class="symbol">✔</span>';
+  }
+
+  Array.from(options.children).forEach(item => item.onclick = null);
+  nextBtn.disabled = false;
+}
+
+nextBtn.addEventListener('click', ()=>{
+  index++;
+  if(index < quiz.length){
+    loadQuiz();
+  } else {
+    question.innerText = `Quiz Completed! Score: ${score} / ${quiz.length}`;
+    options.innerHTML = "";
+    nextBtn.style.display = "none";
+  }
+});
+
+loadQuiz();
+</script></body>
+</html>
